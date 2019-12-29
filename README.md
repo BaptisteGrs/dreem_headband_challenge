@@ -1,4 +1,4 @@
-# dreem_headband_challenge
+# Dreem Headband Challenge
 
 Automatic detection of sleep stages using Dreem handband signals and a machine learning approach. 
 
