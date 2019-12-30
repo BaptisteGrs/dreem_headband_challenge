@@ -119,6 +119,44 @@ def frequency_features(signal, eeg_sig=False, signal_name=None):
     if signal_name:return res, names
     else: return res
 
+    
+def decomposition_features(signal, signal_name=None):
+    
+    res = []
+    names = []
+    
+    components = seasonal_decompose(signal, model='additive', freq=int(len(signal)/30))
+    
+    # basic features calculated on trend
+    if signal_name :
+        bsf, labels = basic_signal_features(components.trend, signal_name='_'.join([signal_name, 'trend']))
+        res += bsf
+        names += labels
+    else:res += basic_signal_features(components.trend)
+        
+    # basic features calculated on resid
+    if signal_name :
+        bsf, labels = basic_signal_features(components.resid, signal_name='_'.join([signal_name, 'resid']))
+        res += bsf
+        names += labels
+    else:res += basic_signal_features(components.resid, signal_name)
+        
+    # autoregressive coefficients calculated on trend
+    def ar_coefficients(sig):
+
+        model = AR(sig)
+        model = model.fit()
+    
+        return list(model.params)
+    
+    if signal_name:
+        ar = ar_coefficients(components.trend)
+        res += ar
+        names += ['{}_AR_{}'.format(signal_name, i) for i in range(len(ar))]
+    else:res += ar_coefficients(components.trend)
+
+
+
 def compute_features(database, biomarkers):
     """
     """
