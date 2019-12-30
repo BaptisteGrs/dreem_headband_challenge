@@ -154,7 +154,9 @@ def decomposition_features(signal, signal_name=None):
         res += ar
         names += ['{}_AR_{}'.format(signal_name, i) for i in range(len(ar))]
     else:res += ar_coefficients(components.trend)
-
+    
+    if signal_name: return res, names
+    else: return res
 
 
 def compute_features(database, biomarkers):
