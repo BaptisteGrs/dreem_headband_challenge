@@ -14,6 +14,7 @@ from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import preprocessing
 from sklearn.model_selection import GridSearchCV
+import xgboost as xgb
 
 # more exotic libraries
 from entropy import entropy

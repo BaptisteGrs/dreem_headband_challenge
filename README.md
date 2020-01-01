@@ -7,17 +7,18 @@ Automatic detection of sleep stages using Dreem handband signals and a machine l
 ### Features to add : 
 - [X] Distance between the EEGs
 - [X] Spectrograms to include frequencies information
-- [ ] Decomposition into wavelets
+- [ ] Seasonal decomposition 
 - [ ] Coefficients of fitted auto-regressive models
+- [ ] Decomposition into wavelets
 
 ### Data manipulation
 - [X] Remove outliers with huge extremas values
-- [ ] Treat the imbalanced dataset problem
+- [X] Treat the imbalanced dataset problem : No improvement with basic SMOTE, try with undersampling + oversampling to not denature the dataset authenticity? 
 
 ### Model selection
 
 - [X] Random Forest
-- [ ] XGBoost
+- [X] XGBoost
 - [ ] ExtraTrees
 
 ## Build pipeline
