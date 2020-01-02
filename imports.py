@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sg
 from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.ar_model import AR
 from sklearn import metrics 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import preprocessing
