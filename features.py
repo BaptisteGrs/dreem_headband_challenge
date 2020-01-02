@@ -121,39 +121,66 @@ def frequency_features(signal, eeg_sig=False, signal_name=None):
 
     
 def decomposition_features(signal, signal_name=None):
+    """
+    Computes basic features as well as autoregressive coefficients calculated on the trend and residual components 
+    from the decomposition of the signal.
+    signal is a 2D array
+    """
     
     res = []
-    names = []
-    
-    components = seasonal_decompose(signal, model='additive', freq=int(len(signal)/30))
-    
-    # basic features calculated on trend
-    if signal_name :
-        bsf, labels = basic_signal_features(components.trend, signal_name='_'.join([signal_name, 'trend']))
-        res += bsf
-        names += labels
-    else:res += basic_signal_features(components.trend)
-        
-    # basic features calculated on resid
-    if signal_name :
-        bsf, labels = basic_signal_features(components.resid, signal_name='_'.join([signal_name, 'resid']))
-        res += bsf
-        names += labels
-    else:res += basic_signal_features(components.resid, signal_name)
-        
-    # autoregressive coefficients calculated on trend
-    def ar_coefficients(sig):
 
-        model = AR(sig)
-        model = model.fit()
+    for i in range(0,len(components.trend)) :
+         
+        # decomposition
+        
+        sdc = seasonal_decompose(signal[i], model='additive', freq=int(len(dbs[signal_name][0])/30))
+        
+        # dropping NaN values left by the seasonal_decomposition function
+        
+        nan_trend = np.where(np.invert(np.isnan(sdc.trend)))[0]
+        trend_sig = sdc.trend[nan_trend]
+        
+        nan_resid = np.where(np.invert(np.isnan(sdc.resid)))[0]
+        resid_sig = sdc.resid[nan_resid]
     
-        return list(model.params)
+        
+        # basic features calculated on trend
     
-    if signal_name:
-        ar = ar_coefficients(components.trend)
+        res += list(np.reshape(basic_signal_features(np.reshape(trend_sig, (1, len(trend_sig)))), (5,)))
+
+       
+        # basic features calculated on resid
+
+        res += list(np.reshape(basic_signal_features(np.reshape(resid_sig, (1, len(resid_sig)))), (5,)))
+
+        
+        # autoregressive coefficients calculated on trend
+        def ar_coefficients(sig):
+            model = AR(sig)
+            model = model.fit()
+            return list(model.params)
+    
+        ar = ar_coefficients(trend_sig)
         res += ar
+
+
+    res = list(np.reshape(res, (len(ar)+10, len(components.trend))))
+
+    if signal_name:
+        
+        names = []
+        names.append(signal_name + '_abs_mean_trend')
+        names.append(signal_name + '_abs_median_trend')
+        names.append(signal_name + '_std_trend')
+        names.append(signal_name + '_abs_min_trend')
+        names.append(signal_name + '_abs_max_trend')
+        names.append(signal_name + '_abs_mean_resid')
+        names.append(signal_name + '_abs_median_resid')
+        names.append(signal_name + '_std_resid')
+        names.append(signal_name + '_abs_min_resid')
+        names.append(signal_name + '_abs_max_resid')
         names += ['{}_AR_{}'.format(signal_name, i) for i in range(len(ar))]
-    else:res += ar_coefficients(components.trend)
+    
     
     if signal_name: return res, names
     else: return res
@@ -178,10 +205,15 @@ def compute_features(database, biomarkers):
         eeg_sig = marker in eegs
         freq_res, freq_names = frequency_features(database[marker], signal_name=marker, eeg_sig=eeg_sig)
         
+        # decomposition features
+        dec_res, dec_names = decomposition_features(database[marker], signal_name=marker)
+        
         res += chaos_res
         res += freq_res
+        res += dec_res
         names += chaos_names
         names += freq_names
+        names += dec_names
         
         val += res
         nme += names
