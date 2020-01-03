@@ -129,11 +129,11 @@ def decomposition_features(signal, signal_name=None):
     
     res = []
 
-    for i in range(0,len(components.trend)) :
+    for i in range(0,len(signal)) :
          
         # decomposition
         
-        sdc = seasonal_decompose(signal[i], model='additive', freq=int(len(dbs[signal_name][0])/30))
+        sdc = seasonal_decompose(signal[i], model='additive', freq=int(len(signal[i])/30))
         
         # dropping NaN values left by the seasonal_decomposition function
         
@@ -164,7 +164,7 @@ def decomposition_features(signal, signal_name=None):
         res += ar
 
 
-    res = list(np.reshape(res, (len(ar)+10, len(components.trend))))
+    res = list(np.reshape(res, (len(ar)+10, len(signal))))
 
     if signal_name:
         
