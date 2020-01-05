@@ -14,8 +14,9 @@ from statsmodels.tsa.ar_model import AR
 from sklearn import metrics 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import preprocessing
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, StratifiedKFold
 import xgboost as xgb
+from scipy import stats
 
 # more exotic libraries
 from entropy import entropy
