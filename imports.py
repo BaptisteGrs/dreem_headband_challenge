@@ -17,6 +17,10 @@ from sklearn import preprocessing
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, StratifiedKFold
 import xgboost as xgb
 from scipy import stats
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import confusion_matrix
+from matplotlib import cm
+from sklearn.utils.class_weight import compute_class_weight
 
 # more exotic libraries
 from entropy import entropy
